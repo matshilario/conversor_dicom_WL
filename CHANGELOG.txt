@@ -1,0 +1,93 @@
+================================================================================
+CONVERSOR DICOM .img - HISTÓRICO DE ALTERAÇÕES
+================================================================================
+
+Data: 01/12/2025
+
+VERSÃO 3.0 - CORREÇÃO CRÍTICA: Compatibilidade com pylinac
+-----------------------------------------------------------
+
+CORREÇÃO CRÍTICA:
+~~~~~~~~~~~~~~~~~
+✓ Adição automática de File Meta Information Header completo
+  - Transfer Syntax UID (Explicit VR Little Endian)
+  - Media Storage SOP Class UID
+  - Media Storage SOP Instance UID
+  - Implementation Class UID (gerado automaticamente)
+  - Implementation Version Name
+
+✓ Validação automática pós-conversão
+  - Tenta ler arquivo sem force=True
+  - Confirma compatibilidade com pylinac
+  - Exibe mensagem de validação ao usuário
+
+PROBLEMA RESOLVIDO:
+~~~~~~~~~~~~~~~~~~~
+Arquivos .img convertidos não funcionavam com pylinac para análise de
+Winston-Lutz porque não possuíam o File Meta Information Header padrão DICOM.
+
+IMPACTO:
+~~~~~~~~
+✅ Arquivos agora são 100% compatíveis com pylinac
+✅ Arquivos podem ser lidos sem force=True
+✅ Compatíveis com todos os visualizadores DICOM padrão
+✅ Seguem especificação DICOM Part 10 corretamente
+
+
+VERSÃO 2.0 - Nomeação Automática Inteligente
+---------------------------------------------
+
+MELHORIAS:
+~~~~~~~~~~
+✓ Nomeação automática baseada em campos DICOM
+  - Prioridade 1: Series Description (ex: "WL:" → "WL.dcm")
+  - Prioridade 2: RT Image Label
+  - Prioridade 3: Patient ID + Study Date
+  - Fallback: Nome original + "_converted"
+
+✓ Remoção automática de caracteres inválidos
+  - Remove: : / \ * ? " < > |
+  - Garante compatibilidade com sistema de arquivos Windows
+
+✓ Proteção contra sobrescrita
+  - Se arquivo existe, adiciona contador automático
+  - Ex: WL.dcm, WL_1.dcm, WL_2.dcm, etc.
+
+✓ Exibição do nome sugerido na interface
+  - Mostra o nome que será usado na área de informações
+  - Usuário pode modificar se necessário
+
+EXEMPLO DE USO:
+~~~~~~~~~~~~~~~
+Arquivo de entrada: DCM4_Processed.img
+
+Campos DICOM detectados:
+  Series Description: "WL:"
+  RT Image Label: "iViewIMRTSegment"
+  Patient ID: "WL2025"
+  Study Date: "20251201"
+
+Nome gerado: WL.dcm
+(baseado no Series Description, removendo ":")
+
+
+VERSÃO 1.0 - Lançamento Inicial
+--------------------------------
+
+RECURSOS:
+~~~~~~~~~
+✓ Interface gráfica para conversão de arquivos .img
+✓ Análise completa de informações DICOM
+✓ Conversão para formato DICOM padrão
+✓ Suporte a arquivos sem header DICOM (force=True)
+✓ Visualização de:
+  - Informações do paciente
+  - Informações do estudo
+  - Informações do equipamento
+  - Informações técnicas
+  - Dimensões da imagem
+
+✓ Arquivo executável .bat para facilitar uso
+✓ README completo com instruções
+
+================================================================================

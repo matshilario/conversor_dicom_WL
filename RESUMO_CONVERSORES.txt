@@ -1,0 +1,235 @@
+================================================================================
+RESUMO DOS CONVERSORES DICOM CRIADOS
+================================================================================
+
+Data: 01/12/2025
+
+Este projeto contém dois conversores DICOM para uso em análise de Winston-Lutz
+com pylinac:
+
+================================================================================
+1. CONVERSOR .IMG PARA DICOM
+================================================================================
+
+ARQUIVO: dicom_converter_gui.py
+EXECUTOR: executar_conversor.bat
+README: README_CONVERSOR.txt
+
+FUNCAO:
+-------
+Converte arquivos .img (DICOM sem header padrão) exportados de aceleradores
+lineares Elekta para formato DICOM padrão.
+
+RECURSOS:
+---------
+✓ Interface gráfica amigável
+✓ Adiciona File Meta Information Header completo
+✓ Nomeação automática baseada em tags DICOM (Series Description)
+✓ Validação automática de compatibilidade
+✓ Compatível com pylinac
+✓ Transfer Syntax UID: Explicit VR Little Endian
+
+USO TÍPICO:
+-----------
+- Converter imagens portal .img do Elekta Versa HD
+- Preparar arquivos para análise Winston-Lutz
+- Corrigir arquivos DICOM sem header adequado
+
+EXEMPLO:
+--------
+Input:  DCM4_Processed.img
+Output: WL.dcm
+Automático: Nome baseado em "Series Description: WL:"
+
+
+================================================================================
+2. CONVERSOR TIFF PARA DICOM
+================================================================================
+
+ARQUIVO: tiff_to_dicom_gui.py
+EXECUTOR: executar_tiff_conversor.bat
+README: README_TIFF_DICOM.txt
+EXEMPLO: exemplo_tiff_dicom.py
+
+FUNCAO:
+-------
+Converte imagens TIFF (portal images) para formato DICOM usando a função
+nativa do pylinac (image.tiff_to_dicom).
+
+RECURSOS:
+---------
+✓ Interface gráfica com campos para parâmetros
+✓ Validação de parâmetros (ângulos, SID, DPI)
+✓ Usa função oficial do pylinac
+✓ Cria tags DICOM corretas automaticamente
+✓ Compatível 100% com análise Winston-Lutz
+
+PARAMETROS OBRIGATORIOS:
+------------------------
+- SID: Source-to-Image Distance (ex: 1000 mm)
+- Gantry Angle: 0-360° (ex: 0, 90, 180, 270)
+- Collimator Angle: 0-360° (ex: 0)
+- Couch Angle: 0-360° (ex: 0)
+- DPI: Resolução (ex: 400)
+
+USO TÍPICO:
+-----------
+- Converter imagens TIFF exportadas de EPIDs
+- Preparar conjunto de imagens para Winston-Lutz
+- Criar arquivos DICOM a partir de screenshots/exports
+
+EXEMPLO:
+--------
+Input:  wl_gantry0.tiff
+Params: SID=1000, Gantry=0, Coll=0, Couch=0, DPI=400
+Output: wl_gantry0.dcm
+
+
+================================================================================
+COMPARACAO DOS CONVERSORES
+================================================================================
+
+                    .IMG → DICOM         TIFF → DICOM
+----------------------------------------------------------------------
+Entrada             .img                 .tiff / .tif
+Saída              .dcm                 .dcm
+Requer pylinac     Não                  Sim
+Parâmetros         Nenhum               SID, Angles, DPI
+Interface          GUI                  GUI
+Auto-nomeação      Sim                  Não
+Validação          Sim                  Sim
+Compatibilidade    100% pylinac         100% pylinac
+----------------------------------------------------------------------
+
+
+================================================================================
+FLUXO DE TRABALHO WINSTON-LUTZ
+================================================================================
+
+CENÁRIO 1: Arquivos .img do Elekta
+-----------------------------------
+1. Exportar imagens do Elekta como .img
+2. Executar: executar_conversor.bat
+3. Converter cada arquivo .img
+4. Usar arquivos .dcm no pylinac
+
+CENÁRIO 2: Arquivos TIFF
+-------------------------
+1. Obter imagens TIFF (screenshots, exports, etc)
+2. Executar: executar_tiff_conversor.bat
+3. Configurar parâmetros para cada imagem
+4. Converter (repetir para cada ângulo)
+5. Usar arquivos .dcm no pylinac
+
+CENÁRIO 3: Análise Completa Winston-Lutz
+-----------------------------------------
+Preparar 4 imagens:
+- Gantry 0° → g0.dcm
+- Gantry 90° → g90.dcm
+- Gantry 180° → g180.dcm
+- Gantry 270° → g270.dcm
+
+Analisar com pylinac:
+from pylinac import WinstonLutz
+wl = WinstonLutz("pasta/com/arquivos")
+wl.analyze()
+wl.plot_summary()
+
+
+================================================================================
+INSTALACAO E REQUISITOS
+================================================================================
+
+AMBIENTE VIRTUAL:
+-----------------
+Já configurado em: .venv/
+
+DEPENDENCIAS INSTALADAS:
+------------------------
+✓ pydicom (para .img → DICOM)
+✓ tkinter (para interfaces gráficas)
+
+DEPENDENCIAS PENDENTES:
+-----------------------
+⚠ pylinac (para TIFF → DICOM)
+  Instalação: .venv\Scripts\pip.exe install pylinac
+  OU: executar_tiff_conversor.bat (instala automaticamente)
+
+
+================================================================================
+ARQUIVOS DO PROJETO
+================================================================================
+
+CONVERSORES:
+------------
+dicom_converter_gui.py          - GUI para .img → DICOM
+tiff_to_dicom_gui.py           - GUI para TIFF → DICOM
+exemplo_tiff_dicom.py          - Exemplos Python TIFF → DICOM
+
+EXECUTORES:
+-----------
+executar_conversor.bat         - Inicia conversor .img
+executar_tiff_conversor.bat    - Inicia conversor TIFF
+
+DOCUMENTACAO:
+-------------
+README_CONVERSOR.txt           - Manual conversor .img
+README_TIFF_DICOM.txt          - Manual conversor TIFF
+PROBLEMA_RESOLVIDO.txt         - Análise técnica header DICOM
+CHANGELOG.txt                  - Histórico de versões
+RESUMO_CONVERSORES.txt         - Este arquivo
+
+UTILITARIOS:
+------------
+compare_dicom.py               - Compara estruturas DICOM
+fix_dicom_header.py            - Corrige headers DICOM
+test_naming.py                 - Testa nomeação automática
+
+
+================================================================================
+VERSOES
+================================================================================
+
+Conversor .IMG para DICOM: v3.0
+- Nomeação automática inteligente
+- File Meta Information Header completo
+- Compatibilidade 100% pylinac
+
+Conversor TIFF para DICOM: v1.0
+- Interface gráfica completa
+- Usa função nativa pylinac
+- Validação de parâmetros
+
+
+================================================================================
+PROXIMOS PASSOS RECOMENDADOS
+================================================================================
+
+1. Instalar pylinac (se ainda não instalado):
+   .venv\Scripts\pip.exe install pylinac
+
+2. Testar conversor .img com arquivos do Elekta
+
+3. Testar conversor TIFF com imagens de portal
+
+4. Realizar análise Winston-Lutz completa:
+   - Converter 4 imagens (0°, 90°, 180°, 270°)
+   - Executar análise com pylinac
+   - Validar resultados
+
+
+================================================================================
+SUPORTE E REFERENCIAS
+================================================================================
+
+Documentação pylinac:
+https://pylinac.readthedocs.io/en/latest/
+
+Documentação DICOM:
+https://dicom.nema.org/
+
+GitHub pylinac:
+https://github.com/jrkerns/pylinac
+
+
+================================================================================

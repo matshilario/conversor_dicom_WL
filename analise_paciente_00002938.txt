@@ -1,0 +1,30 @@
+================================================================================
+ANALISE DA PASTA: C:\Users\radioterapia\dicom_mosaiq\00002938
+================================================================================
+
+Total de arquivos DICOM encontrados: 187
+
+================================================================================
+RESULTADO DA ANALISE
+================================================================================
+
+✓ SIM - Todos os arquivos se referem a UMA UNICA PACIENTE
+
+Detalhes da paciente:
+
+  Nome: ARNALDO DA SILVA GONÇALVES^FERNANDA
+  ID: 535164
+  Data de Nascimento: 01/01/
+  Sexo: F
+
+  Total de arquivos: 187
+  Modalidades: CT, RTDOSE, RTPLAN, RTSTRUCT
+  Numero de estudos: 1
+  Numero de series: 6
+
+  Descricoes dos estudos:
+    - RT^RT_Thorax (Adult)
+
+  Descricoes das series:
+    - N/A
+    - Thorax  3.0  B41s

@@ -1,0 +1,23 @@
+================================================================================
+ANALISE DO ARQUIVO DCM4_Processed.img
+================================================================================
+
+INFORMACOES DO PACIENTE:
+  Nome: WINSTON-LUTZ^WL^^^
+  ID: WL2025
+  Data de Nascimento: 
+  Sexo: O
+
+INFORMACOES DO ESTUDO:
+  Modalidade: RTIMAGE
+  Data: 20251201
+  Hora: 184349
+  Study UID: 1.3.46.423632.304004.1764619035.1
+
+EQUIPAMENTO:
+  Fabricante: ELEKTA
+  Modelo: Elekta iView Electronic Portal Imaging
+
+TIPO DE ARQUIVO:
+  Este e um arquivo de imagem portal (RT Image)
+  do sistema Elekta iView
