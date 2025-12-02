@@ -25,6 +25,54 @@ if sys.platform == 'win32':
 
 
 # ============================================================================
+# CLASSE: Tooltip (Dica ao passar mouse)
+# ============================================================================
+
+class ToolTip:
+    """Cria tooltip ao passar mouse sobre widget"""
+    def __init__(self, widget, text):
+        self.widget = widget
+        self.text = text
+        self.tooltip_window = None
+        self.widget.bind("<Enter>", self.show_tooltip)
+        self.widget.bind("<Leave>", self.hide_tooltip)
+
+    def show_tooltip(self, event=None):
+        """Mostrar tooltip"""
+        if self.tooltip_window or not self.text:
+            return
+
+        # Posição do tooltip
+        x = self.widget.winfo_rootx() + 20
+        y = self.widget.winfo_rooty() + self.widget.winfo_height() + 5
+
+        # Criar janela do tooltip
+        self.tooltip_window = tw = tk.Toplevel(self.widget)
+        tw.wm_overrideredirect(True)
+        tw.wm_geometry(f"+{x}+{y}")
+
+        # Estilo do tooltip
+        label = tk.Label(
+            tw,
+            text=self.text,
+            justify=tk.LEFT,
+            background="#ffffe0",
+            relief=tk.SOLID,
+            borderwidth=1,
+            font=("Arial", 9),
+            padx=8,
+            pady=6
+        )
+        label.pack()
+
+    def hide_tooltip(self, event=None):
+        """Esconder tooltip"""
+        if self.tooltip_window:
+            self.tooltip_window.destroy()
+            self.tooltip_window = None
+
+
+# ============================================================================
 # CLASSE: Conversor IMG para DICOM
 # ============================================================================
 
@@ -1034,11 +1082,35 @@ class BatchTiffToDicomConverter:
         params_frame = ttk.LabelFrame(main_frame, text="Parâmetros Globais DICOM", padding="10")
         params_frame.grid(row=2, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(0, 10))
 
+        # SID
         ttk.Label(params_frame, text="SID (mm):").grid(row=0, column=0, sticky=tk.W, padx=(0, 5))
         ttk.Entry(params_frame, textvariable=self.sid_var, width=15).grid(row=0, column=1, sticky=tk.W, padx=5)
 
-        ttk.Label(params_frame, text="DPI:").grid(row=0, column=2, sticky=tk.W, padx=(20, 5))
-        ttk.Entry(params_frame, textvariable=self.dpi_var, width=15).grid(row=0, column=3, sticky=tk.W, padx=5)
+        sid_help = ttk.Label(params_frame, text="?", foreground="blue", cursor="hand2", font=('Arial', 9, 'bold'))
+        sid_help.grid(row=0, column=2, sticky=tk.W, padx=(2, 0))
+        ToolTip(sid_help,
+            "SID (Source-to-Image Distance)\n\n"
+            "Distância da fonte de radiação até o detector.\n\n"
+            "• Valor típico: 1000 mm\n"
+            "• Usado para cálculos geométricos\n"
+            "• Essencial para análise Winston-Lutz"
+        )
+
+        # DPI
+        ttk.Label(params_frame, text="DPI:").grid(row=0, column=3, sticky=tk.W, padx=(20, 5))
+        ttk.Entry(params_frame, textvariable=self.dpi_var, width=15).grid(row=0, column=4, sticky=tk.W, padx=5)
+
+        dpi_help = ttk.Label(params_frame, text="?", foreground="blue", cursor="hand2", font=('Arial', 9, 'bold'))
+        dpi_help.grid(row=0, column=5, sticky=tk.W, padx=(2, 0))
+        ToolTip(dpi_help,
+            "DPI (Dots Per Inch)\n\n"
+            "Resolução da imagem em pontos por polegada.\n\n"
+            "• Define o tamanho físico dos pixels\n"
+            "• Pixel Spacing (mm) = 25.4 / DPI\n"
+            "• DPI 400 → 0.0635 mm/pixel\n"
+            "• Maior DPI = melhor resolução\n"
+            "• Essencial para medidas precisas"
+        )
 
         # ===== LAYOUT PRINCIPAL: 2 colunas =====
         content_frame = ttk.Frame(main_frame)
