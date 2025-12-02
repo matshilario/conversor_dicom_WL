@@ -1,0 +1,19 @@
+# Conversor DICOM Unificado - Dependências
+
+# Manipulação de arquivos DICOM
+pydicom>=2.3.0
+
+# Framework de análise QA para radioterapia
+# Inclui função tiff_to_dicom() e análise Winston-Lutz
+pylinac>=3.0.0
+
+# tkinter geralmente vem incluído no Python
+# Se necessário instalar separadamente (Linux):
+# sudo apt-get install python3-tk
+
+# Dependências indiretas do pylinac (instaladas automaticamente):
+# - numpy
+# - scipy
+# - matplotlib
+# - scikit-image
+# - Pillow

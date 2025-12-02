@@ -1,0 +1,560 @@
+================================================================================
+CONVERSOR EM LOTE TIFF PARA DICOM - GUIA DE USO
+================================================================================
+
+Data: 02/12/2025
+Versão: 1.0
+
+================================================================================
+VISÃO GERAL
+================================================================================
+
+O Conversor em Lote permite converter múltiplos arquivos TIFF para DICOM
+de forma automatizada, usando templates personalizáveis para testes de
+Winston-Lutz e outras aplicações de QA em radioterapia.
+
+PRINCIPAIS FUNCIONALIDADES:
+✓ Conversão de múltiplos arquivos TIFF em uma única operação
+✓ Templates pré-definidos para Winston-Lutz (4, 7 ou 9 ângulos)
+✓ Lista personalizável com drag-and-drop
+✓ Preview da conversão antes de executar
+✓ Barra de progresso em tempo real
+✓ Validação automática de incompatibilidades
+
+
+================================================================================
+INTERFACE PRINCIPAL
+================================================================================
+
+A interface está dividida em 5 seções:
+
+1. PASTAS
+   - Pasta com arquivos TIFF (entrada)
+   - Pasta para arquivos DICOM (saída)
+
+2. PARÂMETROS GLOBAIS DICOM
+   - SID (Source-to-Image Distance) em mm
+   - DPI (Dots Per Inch)
+
+3. TEMPLATE DE CONVERSÃO (coluna esquerda)
+   - Seletor de templates pré-definidos
+   - Lista de itens configurável
+   - Botões de controle (Adicionar, Editar, Remover, Subir, Descer)
+
+4. PREVIEW DA CONVERSÃO (coluna direita)
+   - Visualização dos arquivos que serão convertidos
+   - Mapeamento arquivo → nome de saída
+   - Avisos de incompatibilidades
+
+5. CONTROLES DE CONVERSÃO
+   - Botão "Converter Lote"
+   - Barra de progresso
+   - Status da operação
+
+
+================================================================================
+PASSO A PASSO DE USO
+================================================================================
+
+EXEMPLO 1: Usando Template Padrão (Winston-Lutz 4 ângulos)
+-----------------------------------------------------------
+
+1. Clique em "Converter Lote TIFF para DICOM" no menu principal
+
+2. Selecione a pasta com arquivos TIFF:
+   - Clique em "Procurar..." ao lado de "Pasta com arquivos TIFF"
+   - Navegue até a pasta (ex: C:\Users\...\imagens TIFF)
+   - A pasta de saída será sugerida automaticamente
+
+3. Configure os parâmetros globais:
+   - SID: 1000 mm (padrão) ou o valor do seu equipamento
+   - DPI: 400 (padrão) ou o DPI das suas imagens
+
+4. O template "WL Standard 4" já vem selecionado com:
+   - gantry_0   (Gantry=0°,   Coll=0°, Couch=0°)
+   - gantry_90  (Gantry=90°,  Coll=0°, Couch=0°)
+   - gantry_180 (Gantry=180°, Coll=0°, Couch=0°)
+   - gantry_270 (Gantry=270°, Coll=0°, Couch=0°)
+
+5. Clique em "Atualizar Preview" para ver o mapeamento:
+   - Mostra qual arquivo TIFF será convertido para cada item
+   - Exibe avisos se houver incompatibilidades
+
+6. Clique em "Converter Lote"
+   - Confirme se aparecer aviso de incompatibilidade
+   - Acompanhe o progresso na barra
+   - Ao terminar, escolha se deseja abrir a pasta de saída
+
+
+EXEMPLO 2: Criando Template Personalizado
+------------------------------------------
+
+1. Selecione a pasta com arquivos TIFF
+
+2. No seletor de templates, escolha qualquer template como base
+   (ou deixe em "Custom" para começar vazio)
+
+3. Para adicionar um novo item:
+   - Clique em "Adicionar"
+   - Digite o nome do arquivo (ex: "gantry_45")
+   - Configure os ângulos:
+     * Gantry Angle: 45
+     * Collimator Angle: 0
+     * Couch Angle: 0
+   - Clique em "OK"
+
+4. Para editar um item existente:
+   - Selecione o item na lista
+   - Clique em "Editar" (ou duplo-clique no item)
+   - Modifique os valores
+   - Clique em "OK"
+
+5. Para remover um item:
+   - Selecione o item na lista
+   - Clique em "Remover"
+
+6. Para reordenar itens:
+   OPÇÃO 1 (Drag-and-Drop):
+   - Clique e segure um item
+   - Arraste para a posição desejada
+   - Solte o botão do mouse
+
+   OPÇÃO 2 (Botões):
+   - Selecione um item
+   - Clique em "↑ Subir" ou "↓ Descer"
+
+
+EXEMPLO 3: Arquivos com Nomes Numéricos (1.tiff, 2.tiff, etc.)
+---------------------------------------------------------------
+
+Situação: Você tem 7 arquivos nomeados 1.tiff, 2.tiff, ..., 7.tiff
+
+1. Selecione a pasta com os arquivos
+
+2. Configure o template na ordem desejada:
+   1º item: gantry_0    → Arquivo 1.tiff será convertido para gantry_0.dcm
+   2º item: gantry_90   → Arquivo 2.tiff será convertido para gantry_90.dcm
+   3º item: gantry_180  → Arquivo 3.tiff será convertido para gantry_180.dcm
+   4º item: gantry_270  → Arquivo 4.tiff será convertido para gantry_270.dcm
+   5º item: couch_45    → Arquivo 5.tiff será convertido para couch_45.dcm
+   6º item: couch_315   → Arquivo 6.tiff será convertido para couch_315.dcm
+   7º item: coll_45     → Arquivo 7.tiff será convertido para coll_45.dcm
+
+3. Use "WL Extended 7" ou personalize conforme necessário
+
+4. Clique em "Atualizar Preview" para confirmar o mapeamento
+
+5. Converta!
+
+
+================================================================================
+TEMPLATES PRÉ-DEFINIDOS
+================================================================================
+
+WL STANDARD 4
+-------------
+Winston-Lutz básico com 4 ângulos de gantry:
+- gantry_0   (0°)
+- gantry_90  (90°)
+- gantry_180 (180°)
+- gantry_270 (270°)
+
+Ideal para: Testes rápidos de Winston-Lutz
+
+
+WL EXTENDED 7
+-------------
+Winston-Lutz estendido com gantry + couch + collimator:
+- gantry_0   (Gantry 0°)
+- gantry_90  (Gantry 90°)
+- gantry_180 (Gantry 180°)
+- gantry_270 (Gantry 270°)
+- couch_45   (Couch 45°)
+- couch_315  (Couch 315°)
+- coll_45    (Collimator 45°)
+
+Ideal para: Testes completos de Winston-Lutz conforme TG-142
+
+
+WL COMPLETO 9
+-------------
+Winston-Lutz completo com todos os ângulos:
+- gantry_0   (Gantry 0°)
+- gantry_90  (Gantry 90°)
+- gantry_180 (Gantry 180°)
+- gantry_270 (Gantry 270°)
+- couch_45   (Couch 45°)
+- couch_90   (Couch 90°)
+- couch_270  (Couch 270°)
+- couch_315  (Couch 315°)
+- coll_45    (Collimator 45°)
+
+Ideal para: Análise exaustiva e comissionamento
+
+
+CUSTOM
+------
+Template personalizado criado/editado pelo usuário.
+Muda automaticamente para "Custom" quando você:
+- Adiciona um novo item
+- Edita um item existente
+- Remove um item
+- Reordena itens
+
+
+================================================================================
+VALIDAÇÃO E AVISOS
+================================================================================
+
+CASO 1: Mais itens no template que arquivos na pasta
+-----------------------------------------------------
+Situação: Template tem 7 itens, mas há apenas 4 arquivos TIFF
+
+Comportamento:
+✓ Preview mostra aviso
+✓ Ao clicar em "Converter Lote", aparece confirmação
+✓ Apenas os 4 primeiros itens serão processados
+✓ Itens 5, 6 e 7 serão ignorados
+
+Exemplo:
+   Arquivos: 1.tiff, 2.tiff, 3.tiff, 4.tiff
+   Template: gantry_0, gantry_90, gantry_180, gantry_270, couch_45, couch_315, coll_45
+
+   Conversões realizadas:
+   - 1.tiff → gantry_0.dcm
+   - 2.tiff → gantry_90.dcm
+   - 3.tiff → gantry_180.dcm
+   - 4.tiff → gantry_270.dcm
+
+   Itens ignorados:
+   - couch_45, couch_315, coll_45
+
+
+CASO 2: Mais arquivos que itens no template
+--------------------------------------------
+Situação: Há 7 arquivos TIFF, mas template tem apenas 4 itens
+
+Comportamento:
+✓ Preview mostra lista de arquivos não processados
+✓ Ao clicar em "Converter Lote", aparece confirmação
+✓ Apenas os 4 primeiros arquivos serão processados
+✓ Arquivos 5, 6 e 7 não serão convertidos
+
+Exemplo:
+   Arquivos: 1.tiff, 2.tiff, 3.tiff, 4.tiff, 5.tiff, 6.tiff, 7.tiff
+   Template: gantry_0, gantry_90, gantry_180, gantry_270
+
+   Conversões realizadas:
+   - 1.tiff → gantry_0.dcm
+   - 2.tiff → gantry_90.dcm
+   - 3.tiff → gantry_180.dcm
+   - 4.tiff → gantry_270.dcm
+
+   Arquivos não processados:
+   - 5.tiff, 6.tiff, 7.tiff
+
+
+CASO 3: Parâmetros inválidos
+-----------------------------
+Validações realizadas:
+✗ SID ≤ 0
+✗ DPI ≤ 0
+✗ Ângulos fora do intervalo 0-360
+✗ Pasta de entrada não existe
+✗ Sem permissão para criar pasta de saída
+
+Comportamento:
+✓ Mensagem de erro específica
+✓ Conversão não inicia
+
+
+================================================================================
+FUNCIONALIDADES AVANÇADAS
+================================================================================
+
+DRAG-AND-DROP
+-------------
+- Clique e segure um item na lista
+- Arraste para cima ou para baixo
+- Solte na posição desejada
+- A lista é reordenada automaticamente
+- Template muda para "Custom"
+
+
+DUPLO-CLIQUE PARA EDITAR
+-------------------------
+- Duplo-clique em qualquer item da lista
+- Abre o diálogo de edição
+- Modifique os valores
+- Pressione Enter ou clique OK para confirmar
+
+
+PREVIEW AUTOMÁTICO
+------------------
+O preview é atualizado automaticamente quando você:
+- Seleciona uma pasta
+- Muda de template
+- Adiciona/remove/edita itens
+
+Ou manualmente:
+- Clique em "Atualizar Preview"
+
+
+BARRA DE PROGRESSO
+------------------
+Durante a conversão:
+✓ Mostra progresso em tempo real (X/Y arquivos)
+✓ Atualiza a cada arquivo convertido
+✓ Status mostra qual arquivo está sendo processado
+✓ Zera ao concluir (sucesso ou erro)
+
+
+RELATÓRIO DE ERROS
+------------------
+Se houver erros durante a conversão:
+✓ Mostra quantos arquivos foram convertidos com sucesso
+✓ Lista os primeiros 10 erros (arquivo + mensagem)
+✓ Indica se há mais erros além dos 10 primeiros
+✓ Conversão continua mesmo com erros individuais
+
+
+================================================================================
+DICAS E BOAS PRÁTICAS
+================================================================================
+
+1. ORGANIZE SEUS ARQUIVOS
+   - Renomeie arquivos TIFF para nomes descritivos antes de converter
+   - Use ordem alfabética/numérica para facilitar mapeamento
+   - Exemplo: 01_gantry_0.tiff, 02_gantry_90.tiff, etc.
+
+2. VERIFIQUE O PREVIEW
+   - SEMPRE verifique o preview antes de converter
+   - Confirme que o mapeamento está correto
+   - Verifique se não há arquivos faltando ou sobrando
+
+3. USE PASTAS SEPARADAS
+   - Mantenha arquivos TIFF originais em uma pasta
+   - Salve DICOMs convertidos em outra pasta
+   - Facilita organização e evita sobrescrever arquivos
+
+4. SALVE TEMPLATES PERSONALIZADOS
+   - Anote templates que você usa frequentemente
+   - Crie o template uma vez, use sempre que precisar
+   - Exemplo: salve a sequência de ângulos específica do seu protocolo
+
+5. PARÂMETROS DO EQUIPAMENTO
+   - Use o SID real do seu acelerador (não o padrão 1000mm)
+   - Configure DPI correto das suas imagens (geralmente 400)
+   - Consulte as especificações do fabricante
+
+6. VALIDAÇÃO PÓS-CONVERSÃO
+   - Verifique alguns arquivos convertidos com visualizador DICOM
+   - Teste um Winston-Lutz com os arquivos convertidos
+   - Confirme que parâmetros (gantry, coll, couch) estão corretos
+
+
+================================================================================
+WORKFLOW RECOMENDADO
+================================================================================
+
+PREPARAÇÃO
+----------
+1. Exporte imagens TIFF do seu sistema de aquisição
+2. Organize arquivos em uma pasta dedicada
+3. Opcionalmente renomeie para ordem desejada
+
+CONFIGURAÇÃO
+------------
+4. Abra o Conversor em Lote
+5. Selecione a pasta com arquivos TIFF
+6. Escolha template ou crie personalizado
+7. Configure SID e DPI do seu equipamento
+
+VALIDAÇÃO
+---------
+8. Clique em "Atualizar Preview"
+9. Verifique mapeamento arquivo → saída
+10. Confirme que todos os ângulos estão corretos
+11. Ajuste ordem se necessário (drag-and-drop)
+
+CONVERSÃO
+---------
+12. Clique em "Converter Lote"
+13. Confirme avisos se houver
+14. Aguarde conclusão (barra de progresso)
+
+VERIFICAÇÃO
+-----------
+15. Abra a pasta de saída
+16. Verifique se todos os arquivos foram criados
+17. Abra alguns arquivos em visualizador DICOM
+18. Execute análise Winston-Lutz para testar
+
+
+================================================================================
+COMPARAÇÃO: CONVERSOR INDIVIDUAL vs CONVERSOR EM LOTE
+================================================================================
+
+USE O CONVERSOR INDIVIDUAL QUANDO:
+-----------------------------------
+✓ Tem apenas 1 ou 2 arquivos para converter
+✓ Cada arquivo precisa de parâmetros muito diferentes
+✓ Quer controle manual total de cada conversão
+✓ Precisa validar/renomear cada arquivo individualmente
+
+
+USE O CONVERSOR EM LOTE QUANDO:
+--------------------------------
+✓ Tem 3 ou mais arquivos para converter
+✓ Arquivos seguem padrão (Winston-Lutz, QA rotineiro)
+✓ Quer economizar tempo com conversão automatizada
+✓ Usa sempre a mesma sequência de ângulos
+✓ Processa dados de múltiplos testes de uma vez
+
+
+================================================================================
+SOLUÇÃO DE PROBLEMAS
+================================================================================
+
+PROBLEMA: "pylinac não está instalado"
+---------------------------------------
+Solução:
+1. Abra terminal/prompt
+2. Ative o ambiente virtual (.venv)
+3. Execute: pip install pylinac
+4. Tente novamente
+
+PROBLEMA: "Não foi possível criar a pasta de saída"
+---------------------------------------------------
+Solução:
+- Verifique permissões de escrita
+- Escolha outra pasta de saída
+- Execute como administrador (se necessário)
+
+PROBLEMA: "Arquivos não aparecem no preview"
+---------------------------------------------
+Verificar:
+✓ Extensão dos arquivos (.tif ou .tiff)
+✓ Pasta selecionada está correta
+✓ Permissões de leitura da pasta
+
+PROBLEMA: Mapeamento errado no preview
+---------------------------------------
+Causa: Ordem dos arquivos ou template incorreta
+Solução:
+- Renomeie arquivos TIFF na ordem desejada
+- Ou reordene itens do template (drag-and-drop)
+- Clique em "Atualizar Preview" novamente
+
+PROBLEMA: Alguns arquivos falharam na conversão
+------------------------------------------------
+Possíveis causas:
+- Arquivo TIFF corrompido
+- Formato não suportado
+- Permissões de leitura/escrita
+
+Solução:
+- Verifique mensagem de erro específica
+- Tente converter arquivo problemático individualmente
+- Verifique integridade do arquivo TIFF original
+
+
+================================================================================
+FORMATO DO PREVIEW
+================================================================================
+
+Exemplo de preview:
+
+============================================================
+PREVIEW DA CONVERSÃO EM LOTE
+============================================================
+
+Arquivos TIFF encontrados: 7
+Itens no template: 7
+
+------------------------------------------------------------
+CONVERSÕES QUE SERÃO REALIZADAS:
+------------------------------------------------------------
+
+1. 1.tiff
+   → gantry_0.dcm
+   Parâmetros: Gantry=0° Coll=0° Couch=0°
+
+2. 2.tiff
+   → gantry_90.dcm
+   Parâmetros: Gantry=90° Coll=0° Couch=0°
+
+3. 3.tiff
+   → gantry_180.dcm
+   Parâmetros: Gantry=180° Coll=0° Couch=0°
+
+...
+
+
+INTERPRETAÇÃO:
+- Número: Ordem de processamento
+- Nome do arquivo TIFF original
+- → Nome do arquivo DICOM que será criado
+- Parâmetros: Ângulos que serão gravados no DICOM
+
+
+================================================================================
+INFORMAÇÕES TÉCNICAS
+================================================================================
+
+ORDEM DE PROCESSAMENTO
+-----------------------
+- Arquivos TIFF são ordenados alfabeticamente
+- Mapeamento é 1:1 sequencial (1º arquivo → 1º item template)
+- Template pode ter qualquer ordem (configurável)
+
+ARQUIVO DICOM GERADO
+--------------------
+Cada arquivo DICOM conterá:
+- File Meta Information Header completo
+- Transfer Syntax UID: Explicit VR Little Endian
+- SOP Class UID: RT Image Storage
+- Tags RT específicas (Gantry, Coll, Couch)
+- SID e DPI configurados
+- 100% compatível com pylinac.WinstonLutz()
+
+PERFORMANCE
+-----------
+- Conversão típica: ~0.5-2 segundos por arquivo
+- 7 arquivos: ~5-15 segundos total
+- Depende do tamanho das imagens e hardware
+
+LIMITAÇÕES
+----------
+- Apenas arquivos .tif e .tiff são reconhecidos
+- Pasta deve existir e ter permissão de leitura
+- Requer pylinac instalado
+- Validação de ângulos: 0-360°
+
+
+================================================================================
+CHANGELOG
+================================================================================
+
+Versão 1.0 (02/12/2025)
+-----------------------
+✓ Lançamento inicial
+✓ Templates pré-definidos (WL Standard 4, Extended 7, Completo 9)
+✓ Drag-and-drop para reordenar
+✓ Preview da conversão
+✓ Validação de incompatibilidades
+✓ Barra de progresso
+✓ Relatório de erros
+
+
+================================================================================
+SUPORTE
+================================================================================
+
+Para problemas ou sugestões:
+- Verifique este guia primeiro
+- Consulte documentação do pylinac: https://pylinac.readthedocs.io/
+- Teste com conversor individual para isolar problemas
+
+
+================================================================================

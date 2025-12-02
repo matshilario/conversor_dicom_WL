@@ -1,0 +1,93 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# DICOM Files (examples/test - não commitar dados reais de pacientes!)
+*.dcm
+*.img
+*.tiff
+*.tif
+*.TIFF
+*.TIF
+
+# Pastas com dados de pacientes (IMPORTANTE!)
+00002938/
+imagens TIFF/
+**/patient_data/
+**/dicom_files/
+
+# Arquivos temporários
+*.tmp
+*.bak
+*.log
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Output/Reports
+*.pdf
+relatorio_*.txt
+output_*.txt
+
+# Excluir arquivos de documentação do git (já estão no README)
+# Mas manter para referência local
+# TESTE_REALIZADO.txt
+# COMPARACAO_IMG_TIFF_RESUMO.txt
+# CONVERSOR_EM_LOTE_GUIA.txt
+comparacao_img_vs_tiff.txt
+
+# Credenciais (NUNCA commitar!)
+*.env
+.env
+credentials.json
+secrets.txt
