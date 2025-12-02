@@ -32,13 +32,16 @@ Todos os arquivos DICOM gerados são **100% compatíveis com pylinac** para aná
 - ✅ Configuração de SID, ângulos (gantry, coll, couch) e DPI
 
 ### Conversor em Lote TIFF ⭐
-- ✅ **Templates pré-definidos** para Winston-Lutz (4, 7 ou 9 ângulos)
+- ✅ **Templates JSON editáveis** para Winston-Lutz (4, 7 ou 9 ângulos)
+- ✅ **Salvar/carregar templates personalizados** (botões 💾 e 🗑)
 - ✅ **Drag-and-drop** para reordenar conversões
 - ✅ **Preview interativo** da conversão
 - ✅ **Edição completa** de parâmetros por item
 - ✅ **Barra de progresso** em tempo real
 - ✅ **Validação inteligente** de incompatibilidades
 - ✅ **Relatório detalhado** de erros
+
+**⚠️ IMPORTANTE:** No conversor em lote, os ângulos (gantry, colimador, mesa) são definidos pelo **template**, não pelo nome do arquivo TIFF! Os arquivos TIFF são processados em ordem alfabética e cada um recebe os ângulos do item correspondente no template.
 
 ## 🚀 Instalação
 
@@ -105,27 +108,48 @@ A interface apresenta três opções:
    - Visualize preview
    - Converta em lote
 
-### Exemplo: Winston-Lutz com 7 Imagens
+### Exemplo: Winston-Lutz com 7 Imagens - Conversor em Lote
 
-```python
-# 1. Organize arquivos TIFF em uma pasta
-#    Exemplo: 1.tiff, 2.tiff, ..., 7.tiff
+**Passo a Passo Detalhado:**
+
+```bash
+# 1. Organize arquivos TIFF em uma pasta (nome não importa!)
+#    Exemplo: foto1.tiff, foto2.tiff, ..., foto7.tiff
+#    ou: 1.tiff, 2.tiff, ..., 7.tiff
+#    Os arquivos serão processados em ORDEM ALFABÉTICA
 
 # 2. Abra "Converter Lote TIFF para DICOM"
 
 # 3. Selecione a pasta com os arquivos
 
 # 4. Escolha template "WL Extended 7"
-#    - gantry_0, gantry_90, gantry_180, gantry_270
-#    - couch_45, couch_315
-#    - coll_45
+#    O template define os ângulos para cada arquivo:
+#    1º arquivo → gantry_0    (G:0°   C:0°  T:0°)
+#    2º arquivo → gantry_90   (G:90°  C:0°  T:0°)
+#    3º arquivo → gantry_180  (G:180° C:0°  T:0°)
+#    4º arquivo → gantry_270  (G:270° C:0°  T:0°)
+#    5º arquivo → couch_45    (G:0°   C:0°  T:45°)
+#    6º arquivo → couch_315   (G:0°   C:0°  T:315°)
+#    7º arquivo → coll_45     (G:0°   C:45° T:0°)
 
 # 5. Configure SID (ex: 1000 mm) e DPI (ex: 400)
 
-# 6. Clique "Converter Lote"
+# 6. Verifique o Preview (mostra qual TIFF → qual ângulo)
 
-# 7. Arquivos DICOM prontos para análise!
+# 7. Clique "Converter Lote"
+
+# 8. Resultado: 7 arquivos DICOM com tags corretas!
+#    gantry_0.dcm, gantry_90.dcm, gantry_180.dcm, gantry_270.dcm
+#    couch_45.dcm, couch_315.dcm, coll_45.dcm
 ```
+
+**🎯 O que determina os ângulos no DICOM:**
+- ✅ **Template** define Gantry, Collimator e Couch angles
+- ✅ **Ordem alfabética** dos arquivos TIFF determina qual item do template usar
+- ✅ **Nome do arquivo TIFF não importa** (pode ser qualquer nome)
+- ✅ **Tags DICOM** (300A,011E, 300A,0120, 300A,0122) são escritas automaticamente
+
+**💡 Dica:** Use o botão 💾 para salvar seu próprio template personalizado!
 
 ### Análise com Pylinac
 
@@ -152,6 +176,7 @@ wl.save_summary('relatorio_wl.pdf')
 ```
 dicom_mosaiq/
 ├── conversor_dicom_unificado.py    # Interface principal (3 conversores)
+├── templates_wl.json               # Templates Winston-Lutz editáveis
 ├── dicom_converter_gui.py          # Conversor IMG (standalone)
 ├── tiff_to_dicom_gui.py           # Conversor TIFF (standalone)
 ├── fix_dicom_header.py            # Utilitário para corrigir headers
@@ -163,6 +188,41 @@ dicom_mosaiq/
 ├── COMPARACAO_IMG_TIFF_RESUMO.txt # Comparação técnica IMG vs TIFF
 └── TESTE_REALIZADO.txt           # Documentação de testes
 ```
+
+## 📝 Templates Winston-Lutz (templates_wl.json)
+
+Os templates são armazenados em formato JSON editável. Você pode:
+
+### Usar Templates Pré-definidos:
+- **WL Standard 4** - 4 ângulos de gantry (0°, 90°, 180°, 270°)
+- **WL Extended 7** - 4 gantries + 2 couches + 1 collimator
+- **WL Completo 9** - 9 posições completas
+
+### Criar Templates Personalizados:
+1. Configure sua lista de conversões no conversor
+2. Clique no botão 💾 (salvar)
+3. Digite um nome e descrição
+4. O template fica salvo permanentemente!
+
+### Editar Manualmente o JSON:
+```json
+{
+  "templates": {
+    "Meu Template Custom": {
+      "description": "Template personalizado para meu acelerador",
+      "items": [
+        {"name": "gantry_0", "gantry": "0", "coll": "0", "couch": "0"},
+        {"name": "gantry_45", "gantry": "45", "coll": "0", "couch": "0"}
+      ]
+    }
+  }
+}
+```
+
+### Deletar Templates:
+- Selecione o template no dropdown
+- Clique no botão 🗑 (deletar)
+- Confirme a exclusão
 
 ## 🔧 Dependências
 
@@ -268,6 +328,16 @@ Contribuições são bem-vindas! Por favor:
 5. Abra um Pull Request
 
 ## 📝 Changelog
+
+### v1.1.0 (2025-12-02)
+- 🐛 **FIX:** Corrigido bug no diálogo "Adicionar Item" - StringVar não sincronizava com Entry
+- ✨ **NEW:** Sistema de templates JSON editável (templates_wl.json)
+- ✨ **NEW:** Botões para salvar 💾 e deletar 🗑 templates personalizados
+- ✨ **NEW:** Templates carregados dinamicamente do JSON
+- 📚 **DOCS:** Explicação detalhada sobre como o conversor em lote determina ângulos
+- 📚 **DOCS:** Seção sobre templates Winston-Lutz no README
+- 🔧 **TECH:** Removido código hardcoded de templates, agora usa JSON
+- 🔧 **TECH:** Entry widgets usam .get() direto em vez de StringVar
 
 ### v1.0.0 (2025-12-02)
 - ✨ Lançamento inicial

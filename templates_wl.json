@@ -1,0 +1,192 @@
+{
+  "templates": {
+    "WL Standard 4": {
+      "description": "Winston-Lutz padrão: 4 ângulos de gantry",
+      "items": [
+        {
+          "name": "gantry_0",
+          "gantry": "0",
+          "coll": "0",
+          "couch": "0"
+        },
+        {
+          "name": "gantry_90",
+          "gantry": "90",
+          "coll": "0",
+          "couch": "0"
+        },
+        {
+          "name": "gantry_180",
+          "gantry": "180",
+          "coll": "0",
+          "couch": "0"
+        },
+        {
+          "name": "gantry_270",
+          "gantry": "270",
+          "coll": "0",
+          "couch": "0"
+        }
+      ]
+    },
+    "WL Extended 7": {
+      "description": "Winston-Lutz estendido: 4 gantries + 2 couches + 1 collimator",
+      "items": [
+        {
+          "name": "gantry_0",
+          "gantry": "0",
+          "coll": "0",
+          "couch": "0"
+        },
+        {
+          "name": "gantry_90",
+          "gantry": "90",
+          "coll": "0",
+          "couch": "0"
+        },
+        {
+          "name": "gantry_180",
+          "gantry": "180",
+          "coll": "0",
+          "couch": "0"
+        },
+        {
+          "name": "gantry_270",
+          "gantry": "270",
+          "coll": "0",
+          "couch": "0"
+        },
+        {
+          "name": "couch_45",
+          "gantry": "0",
+          "coll": "0",
+          "couch": "45"
+        },
+        {
+          "name": "couch_315",
+          "gantry": "0",
+          "coll": "0",
+          "couch": "315"
+        },
+        {
+          "name": "coll_45",
+          "gantry": "0",
+          "coll": "45",
+          "couch": "0"
+        }
+      ]
+    },
+    "WL Completo 9": {
+      "description": "Winston-Lutz completo: 9 posições",
+      "items": [
+        {
+          "name": "gantry_0",
+          "gantry": "0",
+          "coll": "0",
+          "couch": "0"
+        },
+        {
+          "name": "gantry_90",
+          "gantry": "90",
+          "coll": "0",
+          "couch": "0"
+        },
+        {
+          "name": "gantry_180",
+          "gantry": "180",
+          "coll": "0",
+          "couch": "0"
+        },
+        {
+          "name": "gantry_270",
+          "gantry": "270",
+          "coll": "0",
+          "couch": "0"
+        },
+        {
+          "name": "couch_45",
+          "gantry": "0",
+          "coll": "0",
+          "couch": "45"
+        },
+        {
+          "name": "couch_90",
+          "gantry": "0",
+          "coll": "0",
+          "couch": "90"
+        },
+        {
+          "name": "couch_270",
+          "gantry": "0",
+          "coll": "0",
+          "couch": "270"
+        },
+        {
+          "name": "couch_315",
+          "gantry": "0",
+          "coll": "0",
+          "couch": "315"
+        },
+        {
+          "name": "coll_45",
+          "gantry": "0",
+          "coll": "45",
+          "couch": "0"
+        }
+      ]
+    },
+    "testestestse": {
+      "description": "Template customizado com 8 itens",
+      "items": [
+        {
+          "name": "gantry_0",
+          "gantry": "0",
+          "coll": "0",
+          "couch": "0"
+        },
+        {
+          "name": "gantry_90",
+          "gantry": "90",
+          "coll": "0",
+          "couch": "0"
+        },
+        {
+          "name": "gantry_180",
+          "gantry": "180",
+          "coll": "0",
+          "couch": "0"
+        },
+        {
+          "name": "gantry_270",
+          "gantry": "270",
+          "coll": "0",
+          "couch": "0"
+        },
+        {
+          "name": "couch_45",
+          "gantry": "0",
+          "coll": "0",
+          "couch": "45"
+        },
+        {
+          "name": "couch_315",
+          "gantry": "0",
+          "coll": "0",
+          "couch": "315"
+        },
+        {
+          "name": "coll_45",
+          "gantry": "0",
+          "coll": "45",
+          "couch": "0"
+        },
+        {
+          "name": "teste3",
+          "gantry": "20.0",
+          "coll": "20.0",
+          "couch": "20.0"
+        }
+      ]
+    }
+  }
+}

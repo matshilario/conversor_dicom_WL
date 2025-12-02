@@ -12,6 +12,7 @@ from pydicom.dataset import FileMetaDataset
 from pydicom.uid import ExplicitVRLittleEndian, generate_uid
 import os
 import sys
+import json
 from datetime import datetime
 
 # Configurar codificação UTF-8
@@ -827,6 +828,9 @@ class BatchTiffToDicomConverter:
         # Configurar comportamento ao fechar
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
+        # Arquivo de templates
+        self.templates_file = os.path.join(os.path.dirname(__file__), "templates_wl.json")
+
         # Variáveis
         self.input_folder = tk.StringVar()
         self.output_folder = tk.StringVar()
@@ -842,6 +846,9 @@ class BatchTiffToDicomConverter:
         # Variável para drag-and-drop
         self.drag_start_index = None
 
+        # Carregar templates do JSON
+        self.templates_data = self.load_templates_from_json()
+
         # Criar interface
         self.create_widgets()
 
@@ -853,6 +860,142 @@ class BatchTiffToDicomConverter:
         self.root.destroy()
         if self.on_close_callback:
             self.on_close_callback()
+
+    def load_templates_from_json(self):
+        """Carregar templates do arquivo JSON"""
+        try:
+            if os.path.exists(self.templates_file):
+                with open(self.templates_file, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    return data.get('templates', {})
+            else:
+                # Criar arquivo padrão se não existir
+                default_data = {
+                    "templates": {
+                        "WL Standard 4": {
+                            "description": "Winston-Lutz padrão: 4 ângulos de gantry",
+                            "items": [
+                                {"name": "gantry_0", "gantry": "0", "coll": "0", "couch": "0"},
+                                {"name": "gantry_90", "gantry": "90", "coll": "0", "couch": "0"},
+                                {"name": "gantry_180", "gantry": "180", "coll": "0", "couch": "0"},
+                                {"name": "gantry_270", "gantry": "270", "coll": "0", "couch": "0"}
+                            ]
+                        }
+                    }
+                }
+                self.save_templates_to_json(default_data['templates'])
+                return default_data['templates']
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao carregar templates:\n{str(e)}")
+            return {}
+
+    def save_templates_to_json(self, templates_dict):
+        """Salvar templates no arquivo JSON"""
+        try:
+            data = {"templates": templates_dict}
+            with open(self.templates_file, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+            return True
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao salvar templates:\n{str(e)}")
+            return False
+
+    def save_current_template(self):
+        """Salvar template atual com novo nome"""
+        if not self.conversion_list:
+            messagebox.showwarning("Atenção", "Configure pelo menos um item antes de salvar o template!")
+            return
+
+        # Diálogo para nome do template
+        dialog = tk.Toplevel(self.root)
+        dialog.title("Salvar Template")
+        dialog.geometry("400x150")
+        dialog.transient(self.root)
+        dialog.grab_set()
+
+        # Centralizar
+        dialog.update_idletasks()
+        x = (dialog.winfo_screenwidth() // 2) - (dialog.winfo_width() // 2)
+        y = (dialog.winfo_screenheight() // 2) - (dialog.winfo_height() // 2)
+        dialog.geometry(f"+{x}+{y}")
+
+        frame = ttk.Frame(dialog, padding="20")
+        frame.pack(fill=tk.BOTH, expand=True)
+
+        ttk.Label(frame, text="Nome do template:", font=('Arial', 10, 'bold')).pack(anchor=tk.W, pady=(0, 5))
+        name_entry = ttk.Entry(frame, width=40)
+        name_entry.pack(fill=tk.X, pady=(0, 10))
+        name_entry.focus()
+
+        ttk.Label(frame, text="Descrição (opcional):").pack(anchor=tk.W, pady=(0, 5))
+        desc_entry = ttk.Entry(frame, width=40)
+        desc_entry.pack(fill=tk.X, pady=(0, 15))
+
+        result = [None]
+
+        def on_save():
+            name = name_entry.get().strip()
+            if not name:
+                messagebox.showwarning("Atenção", "Digite um nome para o template!")
+                name_entry.focus()
+                return
+
+            desc = desc_entry.get().strip()
+            if not desc:
+                desc = f"Template customizado com {len(self.conversion_list)} itens"
+
+            # Adicionar ao dicionário de templates
+            self.templates_data[name] = {
+                "description": desc,
+                "items": [item.copy() for item in self.conversion_list]
+            }
+
+            # Salvar no JSON
+            if self.save_templates_to_json(self.templates_data):
+                messagebox.showinfo("Sucesso", f"Template '{name}' salvo com sucesso!")
+                # Atualizar combo box
+                self.update_template_combo()
+                self.template_combo.set(name)
+                result[0] = True
+            dialog.destroy()
+
+        def on_cancel():
+            dialog.destroy()
+
+        button_frame = ttk.Frame(frame)
+        button_frame.pack()
+
+        ttk.Button(button_frame, text="Salvar", command=on_save, width=15).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="Cancelar", command=on_cancel, width=15).pack(side=tk.LEFT, padx=5)
+
+        name_entry.bind('<Return>', lambda e: on_save())
+        name_entry.bind('<Escape>', lambda e: on_cancel())
+
+        dialog.wait_window()
+
+    def delete_template(self):
+        """Deletar template selecionado"""
+        current = self.template_combo.get()
+        if current == "Custom":
+            messagebox.showinfo("Info", "Não é possível deletar o template 'Custom'.")
+            return
+
+        if not current or current not in self.templates_data:
+            messagebox.showwarning("Atenção", "Selecione um template para deletar!")
+            return
+
+        if messagebox.askyesno("Confirmar", f"Deseja realmente deletar o template '{current}'?"):
+            del self.templates_data[current]
+            if self.save_templates_to_json(self.templates_data):
+                messagebox.showinfo("Sucesso", f"Template '{current}' deletado!")
+                self.update_template_combo()
+                self.template_combo.set("WL Standard 4")
+                self.load_template("WL Standard 4")
+
+    def update_template_combo(self):
+        """Atualizar lista de templates no combo box"""
+        template_names = list(self.templates_data.keys()) + ["Custom"]
+        self.template_combo['values'] = template_names
 
     def create_widgets(self):
         # Frame principal
@@ -916,16 +1059,17 @@ class BatchTiffToDicomConverter:
 
         ttk.Label(template_frame, text="Template:").pack(side=tk.LEFT, padx=(0, 5))
 
-        self.template_combo = ttk.Combobox(template_frame, state="readonly", width=20)
-        self.template_combo['values'] = [
-            "WL Standard 4",
-            "WL Extended 7",
-            "WL Completo 9",
-            "Custom"
-        ]
+        self.template_combo = ttk.Combobox(template_frame, state="readonly", width=18)
+        # Carregar templates do JSON
+        template_names = list(self.templates_data.keys()) + ["Custom"]
+        self.template_combo['values'] = template_names
         self.template_combo.current(0)
         self.template_combo.bind('<<ComboboxSelected>>', self.on_template_selected)
         self.template_combo.pack(side=tk.LEFT, padx=5)
+
+        # Botões de gerenciamento de templates
+        ttk.Button(template_frame, text="💾", command=self.save_current_template, width=3).pack(side=tk.LEFT, padx=2)
+        ttk.Button(template_frame, text="🗑", command=self.delete_template, width=3).pack(side=tk.LEFT, padx=2)
 
         # Listbox com scrollbar para itens
         list_container = ttk.Frame(left_frame)
@@ -1041,41 +1185,13 @@ class BatchTiffToDicomConverter:
         self.update_status(f"Encontrados {len(self.tiff_files)} arquivos TIFF na pasta")
 
     def load_template(self, template_name):
-        """Carregar template pré-definido"""
+        """Carregar template do JSON"""
         self.conversion_list = []
 
-        if template_name == "WL Standard 4":
-            # Winston-Lutz padrão: 4 ângulos de gantry
-            self.conversion_list = [
-                {"name": "gantry_0", "gantry": "0", "coll": "0", "couch": "0"},
-                {"name": "gantry_90", "gantry": "90", "coll": "0", "couch": "0"},
-                {"name": "gantry_180", "gantry": "180", "coll": "0", "couch": "0"},
-                {"name": "gantry_270", "gantry": "270", "coll": "0", "couch": "0"},
-            ]
-        elif template_name == "WL Extended 7":
-            # Winston-Lutz estendido: 4 gantries + 2 couches + 1 collimator
-            self.conversion_list = [
-                {"name": "gantry_0", "gantry": "0", "coll": "0", "couch": "0"},
-                {"name": "gantry_90", "gantry": "90", "coll": "0", "couch": "0"},
-                {"name": "gantry_180", "gantry": "180", "coll": "0", "couch": "0"},
-                {"name": "gantry_270", "gantry": "270", "coll": "0", "couch": "0"},
-                {"name": "couch_45", "gantry": "0", "coll": "0", "couch": "45"},
-                {"name": "couch_315", "gantry": "0", "coll": "0", "couch": "315"},
-                {"name": "coll_45", "gantry": "0", "coll": "45", "couch": "0"},
-            ]
-        elif template_name == "WL Completo 9":
-            # Winston-Lutz completo
-            self.conversion_list = [
-                {"name": "gantry_0", "gantry": "0", "coll": "0", "couch": "0"},
-                {"name": "gantry_90", "gantry": "90", "coll": "0", "couch": "0"},
-                {"name": "gantry_180", "gantry": "180", "coll": "0", "couch": "0"},
-                {"name": "gantry_270", "gantry": "270", "coll": "0", "couch": "0"},
-                {"name": "couch_45", "gantry": "0", "coll": "0", "couch": "45"},
-                {"name": "couch_90", "gantry": "0", "coll": "0", "couch": "90"},
-                {"name": "couch_270", "gantry": "0", "coll": "0", "couch": "270"},
-                {"name": "couch_315", "gantry": "0", "coll": "0", "couch": "315"},
-                {"name": "coll_45", "gantry": "0", "coll": "45", "couch": "0"},
-            ]
+        if template_name != "Custom" and template_name in self.templates_data:
+            template = self.templates_data[template_name]
+            # Fazer cópia dos items para evitar modificação do original
+            self.conversion_list = [item.copy() for item in template.get('items', [])]
 
         self.refresh_listbox()
 
@@ -1218,36 +1334,45 @@ class BatchTiffToDicomConverter:
 
         # Campos
         ttk.Label(frame, text="Nome do arquivo:").grid(row=0, column=0, sticky=tk.W, pady=5)
-        name_var = tk.StringVar(value=default_name)
-        name_entry = ttk.Entry(frame, textvariable=name_var, width=30)
+        name_entry = ttk.Entry(frame, width=30)
         name_entry.grid(row=0, column=1, sticky=(tk.W, tk.E), pady=5)
+        if default_name:
+            name_entry.insert(0, default_name)
 
         ttk.Label(frame, text="Gantry Angle (°):").grid(row=1, column=0, sticky=tk.W, pady=5)
-        gantry_var = tk.StringVar(value=default_gantry)
-        ttk.Entry(frame, textvariable=gantry_var, width=30).grid(row=1, column=1, sticky=(tk.W, tk.E), pady=5)
+        gantry_entry = ttk.Entry(frame, width=30)
+        gantry_entry.grid(row=1, column=1, sticky=(tk.W, tk.E), pady=5)
+        if default_gantry:
+            gantry_entry.insert(0, default_gantry)
 
         ttk.Label(frame, text="Collimator Angle (°):").grid(row=2, column=0, sticky=tk.W, pady=5)
-        coll_var = tk.StringVar(value=default_coll)
-        ttk.Entry(frame, textvariable=coll_var, width=30).grid(row=2, column=1, sticky=(tk.W, tk.E), pady=5)
+        coll_entry = ttk.Entry(frame, width=30)
+        coll_entry.grid(row=2, column=1, sticky=(tk.W, tk.E), pady=5)
+        if default_coll:
+            coll_entry.insert(0, default_coll)
 
         ttk.Label(frame, text="Couch Angle (°):").grid(row=3, column=0, sticky=tk.W, pady=5)
-        couch_var = tk.StringVar(value=default_couch)
-        ttk.Entry(frame, textvariable=couch_var, width=30).grid(row=3, column=1, sticky=(tk.W, tk.E), pady=5)
+        couch_entry = ttk.Entry(frame, width=30)
+        couch_entry.grid(row=3, column=1, sticky=(tk.W, tk.E), pady=5)
+        if default_couch:
+            couch_entry.insert(0, default_couch)
 
         result = [None]
 
         def on_ok():
-            name = name_var.get().strip()
+            name = name_entry.get().strip()
             if not name:
                 messagebox.showwarning("Atenção", "Digite um nome para o arquivo!")
+                name_entry.focus()
                 return
 
             try:
-                gantry = str(float(gantry_var.get()))
-                coll = str(float(coll_var.get()))
-                couch = str(float(couch_var.get()))
+                gantry = str(float(gantry_entry.get()))
+                coll = str(float(coll_entry.get()))
+                couch = str(float(couch_entry.get()))
             except ValueError:
                 messagebox.showerror("Erro", "Ângulos devem ser números válidos!")
+                gantry_entry.focus()
                 return
 
             result[0] = {
@@ -1266,6 +1391,16 @@ class BatchTiffToDicomConverter:
 
         ttk.Button(button_frame, text="OK", command=on_ok, width=15).pack(side=tk.LEFT, padx=5)
         ttk.Button(button_frame, text="Cancelar", command=on_cancel, width=15).pack(side=tk.LEFT, padx=5)
+
+        # Bindings para teclas
+        name_entry.bind('<Return>', lambda e: on_ok())
+        name_entry.bind('<Escape>', lambda e: on_cancel())
+        gantry_entry.bind('<Return>', lambda e: on_ok())
+        gantry_entry.bind('<Escape>', lambda e: on_cancel())
+        coll_entry.bind('<Return>', lambda e: on_ok())
+        coll_entry.bind('<Escape>', lambda e: on_cancel())
+        couch_entry.bind('<Return>', lambda e: on_ok())
+        couch_entry.bind('<Escape>', lambda e: on_cancel())
 
         name_entry.focus()
         dialog.wait_window()
