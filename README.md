@@ -132,7 +132,7 @@ A interface apresenta três opções:
 #    6º arquivo → couch_315   (G:0°   C:0°  T:315°)
 #    7º arquivo → coll_45     (G:0°   C:45° T:0°)
 
-# 5. Configure SID (ex: 1000 mm) e DPI (ex: 400)
+# 5. Configure SID (ex: 1600 mm) e DPI (ex: 400)
 
 # 6. Verifique o Preview (mostra qual TIFF → qual ângulo)
 

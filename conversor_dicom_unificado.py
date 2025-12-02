@@ -431,7 +431,7 @@ class TiffToDicomConverter:
         # Variáveis
         self.input_file = tk.StringVar()
         self.output_file = tk.StringVar()
-        self.sid_var = tk.StringVar(value="1000")
+        self.sid_var = tk.StringVar(value="1600")
         self.gantry_var = tk.StringVar(value="0")
         self.coll_var = tk.StringVar(value="0")
         self.couch_var = tk.StringVar(value="0")
@@ -882,7 +882,7 @@ class BatchTiffToDicomConverter:
         # Variáveis
         self.input_folder = tk.StringVar()
         self.output_folder = tk.StringVar()
-        self.sid_var = tk.StringVar(value="1000")
+        self.sid_var = tk.StringVar(value="1600")
         self.dpi_var = tk.StringVar(value="400")
 
         # Lista de conversões (nome_arquivo, gantry, coll, couch, nome_saida)
@@ -1091,7 +1091,7 @@ class BatchTiffToDicomConverter:
         ToolTip(sid_help,
             "SID (Source-to-Image Distance)\n\n"
             "Distância da fonte de radiação até o detector.\n\n"
-            "• Valor típico: 1000 mm\n"
+            "• Valor típico: 1600 mm (Elekta iView)\n"
             "• Usado para cálculos geométricos\n"
             "• Essencial para análise Winston-Lutz"
         )
